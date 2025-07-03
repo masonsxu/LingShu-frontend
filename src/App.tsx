@@ -1,35 +1,58 @@
-import { AppBar, Button, Container, Toolbar, Typography } from '@mui/material'
-import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom'
-import ChannelForm from './pages/ChannelForm'
-import ChannelsList from './pages/ChannelsList'
+import { AppBar, Button, Container, MenuItem, Select, Toolbar, Typography } from '@mui/material';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import ChannelForm from './pages/ChannelForm';
+import ChannelsList from './pages/ChannelsList';
 
 function Home() {
+  const { t } = useTranslation();
   return (
     <Container maxWidth="md" style={{ marginTop: '20px' }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Welcome to LingShu Frontend!
+        {t('welcome')}
       </Typography>
       <Typography variant="body1">
-        This is the home page. Navigate to other sections using the links above.
+        {t('home_desc')}
       </Typography>
     </Container>
   )
 }
 
 function App() {
+  const { i18n, t } = useTranslation();
+  const [lang, setLang] = React.useState(i18n.language || 'zh');
+  const handleLangChange = (event: any) => {
+    const lng = event.target.value;
+    setLang(lng);
+    i18n.changeLanguage(lng);
+  };
   return (
     <Router>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            LingShu
+            {t('title')}
           </Typography>
           <Button color="inherit" component={Link} to="/">
-            Home
+            {t('home')}
           </Button>
           <Button color="inherit" component={Link} to="/channels">
-            Channels
+            {t('channels')}
           </Button>
+          <Select
+            value={lang}
+            onChange={handleLangChange}
+            size="small"
+            sx={{
+              ml: 2, color: 'white', borderColor: 'white', minWidth: 90, '.MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+              '.MuiSvgIcon-root': { color: 'white' }
+            }}
+            variant="outlined"
+          >
+            <MenuItem value="zh">中文</MenuItem>
+            <MenuItem value="en">English</MenuItem>
+          </Select>
         </Toolbar>
       </AppBar>
       <Routes>

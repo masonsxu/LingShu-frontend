@@ -15,12 +15,14 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { ChannelModel } from '../api/channels';
 import { deleteChannel, getChannels } from '../api/channels';
 
 const ChannelsList: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [channels, setChannels] = useState<ChannelModel[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -59,10 +61,10 @@ const ChannelsList: React.FC = () => {
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Channels Management
+          {t('channels_management')}
         </Typography>
         <Button variant="contained" color="primary" onClick={() => navigate('/channels/new')}>
-          Create New Channel
+          {t('create_new_channel')}
         </Button>
       </Box>
 
@@ -71,17 +73,17 @@ const ChannelsList: React.FC = () => {
           <CircularProgress />
         </Box>
       ) : error ? (
-        <Typography color="error">{error}</Typography>
+        <Typography color="error">{t('fetch_channels_failed')}</Typography>
       ) : (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="channels table">
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell align="center">Enabled</TableCell>
-                <TableCell align="right">Actions</TableCell>
+                <TableCell>{t('id')}</TableCell>
+                <TableCell>{t('name')}</TableCell>
+                <TableCell>{t('description')}</TableCell>
+                <TableCell align="center">{t('enabled')}</TableCell>
+                <TableCell align="right">{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -95,13 +97,13 @@ const ChannelsList: React.FC = () => {
                   </TableCell>
                   <TableCell>{channel.name}</TableCell>
                   <TableCell>{channel.description}</TableCell>
-                  <TableCell align="center">{channel.enabled ? 'Yes' : 'No'}</TableCell>
+                  <TableCell align="center">{channel.enabled ? t('yes') : t('no')}</TableCell>
                   <TableCell align="right">
                     <IconButton aria-label="edit" onClick={() => navigate(`/channels/edit/${channel.id}`)}>
-                      <EditIcon />
+                      <EditIcon titleAccess={t('edit')} />
                     </IconButton>
                     <IconButton aria-label="delete" onClick={() => handleDelete(channel.id)}>
-                      <DeleteIcon />
+                      <DeleteIcon titleAccess={t('delete')} />
                     </IconButton>
                   </TableCell>
                 </TableRow>
