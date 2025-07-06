@@ -62,13 +62,20 @@ export interface ChannelModel {
   filters?: FilterConfig[];
   transformers?: TransformerConfig[];
   destinations: DestinationConfig[];
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ChannelListResponse {
+  channels: ChannelModel[];
+  total: number;
 }
 
 // --- API Functions ---
 
 export const getChannels = async (): Promise<ChannelModel[]> => {
-  const response = await axios.get<ChannelModel[]>(`${API_BASE_URL}/channels/`);
-  return response.data;
+  const response = await axios.get<ChannelListResponse>(`${API_BASE_URL}/channels/`);
+  return response.data.channels;
 };
 
 export const getChannelById = async (id: string): Promise<ChannelModel> => {
