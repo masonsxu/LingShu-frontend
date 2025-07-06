@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000'; // Your FastAPI backend URL
+const API_BASE_URL = 'http://localhost:8000/api/v1'; // Your FastAPI backend URL
 
 // --- TypeScript Interfaces mirroring Pydantic Models ---
 
@@ -88,4 +88,20 @@ export const updateChannel = async (id: string, channel: ChannelModel): Promise<
 
 export const deleteChannel = async (id: string): Promise<void> => {
   await axios.delete(`${API_BASE_URL}/channels/${id}`);
+};
+
+export interface MessageProcessRequest {
+  message: string;
+}
+
+export interface MessageProcessResponse {
+  success: boolean;
+  result?: string;
+  error?: string;
+  processed_message?: string;
+}
+
+export const processMessage = async (id: string, request: MessageProcessRequest): Promise<MessageProcessResponse> => {
+  const response = await axios.post<MessageProcessResponse>(`${API_BASE_URL}/channels/${id}/process`, request);
+  return response.data;
 };

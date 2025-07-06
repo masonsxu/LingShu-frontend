@@ -1,4 +1,4 @@
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { Delete as DeleteIcon, Edit as EditIcon, PlayArrow as TestIcon } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -14,7 +14,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { ChannelModel } from '../api/channels';
@@ -27,31 +27,31 @@ const ChannelsList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchChannels = async () => {
+  const fetchChannels = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getChannels();
       setChannels(data);
     } catch (err) {
-      setError('Failed to fetch channels.');
+      setError(t('fetch_channels_failed'));
       console.error(err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
 
   useEffect(() => {
     fetchChannels();
-  }, []);
+  }, [fetchChannels]);
 
   const handleDelete = async (id: string | undefined) => {
     if (!id) return;
-    if (window.confirm(`Are you sure you want to delete channel ${id}?`)) {
+    if (window.confirm(t('confirm_delete_channel', { id }))) {
       try {
         await deleteChannel(id);
         fetchChannels(); // Refresh the list
       } catch (err) {
-        setError(`Failed to delete channel ${id}.`);
+        setError(t('delete_channel_failed', { id }));
         console.error(err);
       }
     }
@@ -99,6 +99,9 @@ const ChannelsList: React.FC = () => {
                   <TableCell>{channel.description}</TableCell>
                   <TableCell align="center">{channel.enabled ? t('yes') : t('no')}</TableCell>
                   <TableCell align="right">
+                    <IconButton aria-label="test" onClick={() => navigate(`/channels/test/${channel.id}`)}>
+                      <TestIcon titleAccess={t('test')} />
+                    </IconButton>
                     <IconButton aria-label="edit" onClick={() => navigate(`/channels/edit/${channel.id}`)}>
                       <EditIcon titleAccess={t('edit')} />
                     </IconButton>
